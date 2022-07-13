@@ -19,29 +19,30 @@ secStop = (startSec+duration)*fs;
 if selection_mode == MULTISELECT
     [filename, path] = uigetfile('*', 'Select music', 'MultiSelect', 'on');
 end
-musicas = strcat(path, filename);
+musicas = strcat(path, filename)';
 
-for filename = musicas(:)
-if mode == GRAVAR
-    somObj = audiorecorder(fs,nbits,ncanais);
-    disp('Início ...');
-    recordblocking(somObj, duration); % gravar 
-    disp('Fim da gravação.');
-    dadosDouble = getaudiodata(somObj)';
-elseif mode == LER
-    [dadosDouble,Fs] = audioread(filename, [secStart secStop]);          
-    dadosDouble = dadosDouble';
-end
+for i = 1:length(musicas)
+    filename = musicas{i,1};
+    if mode == GRAVAR
+        somObj = audiorecorder(fs,nbits,ncanais);
+        disp('Início ...');
+        recordblocking(somObj, duration); % gravar 
+        disp('Fim da gravação.');
+        dadosDouble = getaudiodata(somObj)';
+    elseif mode == LER
+        [dadosDouble,Fs] = audioread(filename, [secStart secStop]);          
+        dadosDouble = dadosDouble';
+    end
 
-% if input("Ler gravação? (y/n)",'s')~='n'
-if 1
-   if mode == GRAVAR
-       play(somObj); 
-   elseif mode == LER
-       disp("Tocando ...");
-       sound(dadosDouble,Fs,nbits);
-       disp("Fim.");
-   end
-end
-pause(duration);
+    % if input("Ler gravação? (y/n)",'s')~='n'
+    if 1
+       if mode == GRAVAR
+           play(somObj); 
+       elseif mode == LER
+           disp("Tocando ...");
+           sound(dadosDouble,Fs,nbits);
+           disp("Fim.");
+       end
+    end
+    pause(duration);
 end
